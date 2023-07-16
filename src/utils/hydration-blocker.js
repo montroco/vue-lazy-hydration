@@ -2,20 +2,42 @@ import { makeHydrationObserver } from './hydration-observer';
 import { makeHydrationPromise } from './hydration-promise';
 import { makeNonce } from './nonce';
 
+let hydrationDisabled = false;
+
+if (typeof window === `undefined`) {
+  hydrationDisabled = true;
+} else {
+  window.addEventListener(`load`, () => {
+    hydrationDisabled = true;
+  });
+}
+
+function isHydrationDisabled() {
+  // Hydration may be disabled because we are in SSR context
+  // or page was fully loaded & hydrated, so it's not needed anymore
+  return isServer || isPageLodaded;
+}
+
 export function makeHydrationBlocker(component, options) {
   return Object.assign({
     mixins: [{
       beforeCreate() {
         this.cleanupHandlers = [];
-        const { hydrate, hydrationPromise } = makeHydrationPromise();
-        this.Nonce = makeNonce({ component, hydrationPromise });
-        this.hydrate = hydrate;
-        this.hydrationPromise = hydrationPromise;
+        if (hydrationDisabled) {
+          this.Nonce = component;
+        } else {
+          const { hydrate, hydrationPromise } = makeHydrationPromise();
+          this.Nonce = makeNonce({ component, hydrationPromise });
+          this.hydrate = hydrate;
+          this.hydrationPromise = hydrationPromise;
+        }
       },
       beforeDestroy() {
         this.cleanup();
       },
       mounted() {
+        if (!this.hydrate) return;
+
         if (this.$el.nodeType === Node.COMMENT_NODE) {
           // No SSR rendered content, hydrate immediately.
           this.hydrate();
@@ -83,7 +105,7 @@ export function makeHydrationBlocker(component, options) {
       },
       render(h) {
         return h(this.Nonce, {
-          attrs: this.$attrs,
+          attrs: Object.assign({}, this.$attrs),
           on: this.$listeners,
           scopedSlots: this.$scopedSlots,
         }, this.$slots.default);

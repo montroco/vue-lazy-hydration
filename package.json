@@ -1,6 +1,6 @@
 {
   "name": "vue-lazy-hydration",
-  "version": "2.0.0-beta.4",
+  "version": "2.0.1",
   "description": "Lazy Hydration of Server-Side Rendered Vue.js Components",
   "keywords": [
     "gridsome",
@@ -10,8 +10,9 @@
     "vue"
   ],
   "author": "Markus Oberlehner",
-  "homepage": "https://github.com/maoberlehner/vue-lazy-hydration",
+  "homepage": "https://github.com/montroco/vue-lazy-hydration",
   "license": "MIT",
+  "main": "dist/LazyHydrate.min.js",
   "scripts": {
     "scripts:umd": "rollup --config --output.format umd --name vue-lazy-hydration --output.file dist/LazyHydrate.js src/LazyHydrate.js",
     "scripts:es": "rollup --config --output.format es --name vue-lazy-hydration --output.file dist/LazyHydrate.esm.js src/LazyHydrate.js",
@@ -63,14 +64,12 @@
   "module": "dist/LazyHydrate.esm.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/maoberlehner/vue-lazy-hydration"
+    "url": "https://github.com/montroco/vue-lazy-hydration"
   },
   "bugs": {
-    "url": "https://github.com/maoberlehner/vue-lazy-hydration/issues"
+    "url": "https://github.com/montroco/vue-lazy-hydration/issues"
   },
   "browserslist": [
-    "> 0.5%",
-    "not ie <= 10",
-    "not op_mini all"
+    "> 1% and last 2 versions"
   ]
 }
